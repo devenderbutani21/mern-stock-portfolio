@@ -1,12 +1,13 @@
+import dotenv from 'dotenv';
+dotenv.config();
+
 import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
-import dotenv from 'dotenv';
 
 import stockRoutes from './routes/stockRoutes.js';
 import watchlistRoutes from './routes/watchlistRoutes.js';
-
-dotenv.config();
+import authRoutes from './routes/authRoutes.js';
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -24,6 +25,7 @@ try {
 
 app.use('/api/stocks', stockRoutes);
 app.use('/api/watchlist', watchlistRoutes);
+app.use('/api/auth', authRoutes);
 
 app.get('/', (req,res) => {
     res.json({
