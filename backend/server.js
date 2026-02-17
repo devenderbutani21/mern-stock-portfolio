@@ -39,6 +39,5 @@ app.use('*', (req,res) => {
 });
 
 app.listen(PORT, () => {
-    console.log(`Server: http://localhost:${PORT}`);
-    console.log(`Stocks: http://localhost:${PORT}/api/stocks`);
+    console.log(`Server running on http://localhost:${PORT}`);
 });
