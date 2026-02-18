@@ -1,5 +1,5 @@
 import Stock from '../models/Stock.js';
-import { getLiveQuote } from '../services/stockService.js';
+import { getHistoricalData, getLiveQuote } from '../services/stockService.js';
 
 // GET all stock logic
 export const getAllStocks = async (req,res) => {
@@ -32,3 +32,23 @@ export const getStockBySymbol = async (req,res) => {
         res.status(500).json({ error: error.message });
     }
 };
+
+export const createStock = async (req,res) => {
+    try {
+        const { company, symbol } = req.body;
+        const stock = new Stock({ company, symbol, prices: { current: 0} });
+        await stock.save();
+        res.status(201).json(stock);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+export const getHistorical = async (req,res) => {
+    try {
+        const data = await getHistoricalData(req.params.symbol);
+        res.json(data);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+}

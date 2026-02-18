@@ -33,3 +33,28 @@ export const getLiveQuote = async (symbol) => {
     throw new Error(`Failed to fetch ${symbol}: ${error.message}`);
   }
 };
+
+export const getHistoricalData = async (symbol, days = 30) => {
+  try {
+    const { data } = await axios.get(BASE_URL, {
+      params: {
+        function: 'TIME_SERIES_DAILY',
+        symbol: symbol.toUpperCase(),
+        outputsize: 'compact',
+        apikey: process.env.STOCK_API_KEY
+      }
+    });
+
+    const timeSeries = data['Time Series (Daily)'];
+    if(!timeSeries) throw new Error('No Historical data');
+
+    return Object.entries(timeSeries)
+      .slice(0,days)
+      .map(([data, values]) => ({
+        data,
+        price: parseFloat(values['4. close'])
+      }));
+  } catch (error) { 
+    throw new Error(`Historical fetch failed: ${error.message}`);
+  }
+};

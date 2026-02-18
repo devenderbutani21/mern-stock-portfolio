@@ -51,7 +51,6 @@ export const login = async (req,res) => {
         }
 
         const secret = process.env.JWT_SECRET;
-        console.log('🔑 FRESH SECRET:', !!secret, secret?.length);
         
         const token = jwt.sign(
             { userId: user._id, email: user.email },

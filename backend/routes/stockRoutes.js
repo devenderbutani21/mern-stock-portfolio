@@ -1,9 +1,12 @@
 import { Router } from 'express';
-import { getAllStocks, getStockBySymbol } from '../controllers/stockController.js';
+import { createStock, getAllStocks, getStockBySymbol } from '../controllers/stockController.js';
+import { isAdmin } from '../middleware/admin.js';
 
 const router = Router();
 
 router.get('/', getAllStocks);
 router.get('/:symbol', getStockBySymbol);
+router.post('/', isAdmin, createStock);
+router.get('/:symbol/history', getHistorical);
 
 export default router;
