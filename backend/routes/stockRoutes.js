@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { createStock, getAllStocks, getStockBySymbol } from '../controllers/stockController.js';
+import { createStock, getAllStocks, getStockBySymbol, getHistorical } from '../controllers/stockController.js';
 import { isAdmin } from '../middleware/admin.js';
 
 const router = Router();
