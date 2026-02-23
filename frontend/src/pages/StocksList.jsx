@@ -27,7 +27,8 @@ const StockList = () => {
         const fetchStocks = async () => {
             try {
                 const res = await stockAPI.getAll();
-                setStocks(res.data);
+                // Handle new response structure: { stocks: [...], queueLength, cacheStats }
+                setStocks(Array.isArray(res.data) ? res.data : res.data.stocks || []);
             } catch (err) {
                 setError(err.response?.data?.error || 'Failed to load stocks');
             } finally {
