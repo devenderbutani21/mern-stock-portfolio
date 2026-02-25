@@ -50,7 +50,7 @@ export const getLiveQuote = async (symbol, useCache = true) => {
 
     const result = {
       symbol: quote['01. symbol'],
-      price: parseFloat(quote['05. price']),
+      price: parseFloat(quote['05. price']) || 0,
       change: parseFloat(quote['09. change']) || 0,
       changePercent: parseFloat(quote['10. change percent']?.replace('%', '')) || 0,
       volume: parseInt(quote['06. volume']) || 0

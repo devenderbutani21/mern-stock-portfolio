@@ -29,12 +29,13 @@ const Watchlist = () => {
     try {
       setLoading(true);
       const res = await watchlistAPI.getAll();
+      const watchlistItems = Array.isArray(res.data.data) ? res.data.data : [];
       // Refresh live prices for each watchlist item
       const itemsWithLive = await Promise.all(
-        res.data.map(async (item) => {
+        watchlistItems.map(async (item) => {
           try {
-            const stock = await stockAPI.getOne(item.stockId.symbol || item.stockId);
-            return { ...item, stock };
+            const res = await stockAPI.getOne(item.stockId.symbol || item.stockId);
+            return { ...item, stock: res.data };
           } catch {
             return item;
           }

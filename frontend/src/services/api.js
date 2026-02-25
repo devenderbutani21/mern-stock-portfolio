@@ -29,7 +29,7 @@ export const stockAPI = {
 
 export const watchlistAPI = {
     getAll: () => api.get('/watchlist'),
-    getOne: (stockId) => api.post('/watchlist', { stockId }),
+    add: (stockId) => api.post('/watchlist', { stockId }),
     remove: (id) => api.delete(`/watchlist/${id}`), 
 };
 

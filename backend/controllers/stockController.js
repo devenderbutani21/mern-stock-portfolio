@@ -13,15 +13,20 @@ export const getAllStocks = async (req,res) => {
         for (const stock of stocks) {
             try {
                 const live = await getLiveQuote(stock.symbol);
-                stocksWithLive.push({ ...stock._doc, ...live });
+                stocksWithLive.push({ 
+                    ...stock._doc, 
+                    ...live, 
+                    company: stock.company || stock.name 
+                });
             } catch (error) {
                 console.error(`Failed to fetch ${stock.symbol}:`, error.message);
                 // Fallback to historical price data from Stock model
-                const currentPrice = stock.prices?.c || stock.initial_price || 0;
+                const currentPrice = stock.prices?.c || stock.prices?.current || stock.initial_price || 0;
                 const previousPrice = stock.prices?.pc || stock.price_2007 || stock.price_2002 || currentPrice;
                 const change = currentPrice - previousPrice;
                 const changePercent = previousPrice ? (change / previousPrice * 100) : 0;
                 const fallback = {
+                    ...stock._doc,
                     price: currentPrice,
                     change: change,
                     changePercent: changePercent,
@@ -53,11 +58,12 @@ export const getStockBySymbol = async (req,res) => {
             res.json({
                 ...stock._doc,
                 ...live,
+                company: stock.company || stock.name,
                 queueLength: rateLimiter.getQueueLength()
             });
         } catch (error) {
             // Fallback to cached data
-            const currentPrice = stock.prices?.c || stock.initial_price || 0;
+            const currentPrice = stock.prices?.c || stock.prices?.current || stock.initial_price || 0;
             const previousPrice = stock.prices?.pc || stock.price_2007 || stock.price_2002 || currentPrice;
             const change = currentPrice - previousPrice;
             const changePercent = previousPrice ? (change / previousPrice * 100) : 0;
@@ -77,8 +83,14 @@ export const getStockBySymbol = async (req,res) => {
 
 export const createStock = async (req,res) => {
     try {
-        const { company, symbol } = req.body;
-        const stock = new Stock({ company, symbol, prices: { current: 0} });
+        const { company, symbol, name } = req.body;
+        const stock = new Stock({ 
+            _id: symbol,
+            company: company || name, 
+            name: name || company,
+            symbol, 
+            prices: { c: 0, current: 0 } 
+        });
         await stock.save();
         res.status(201).json(stock);
     } catch (error) {
