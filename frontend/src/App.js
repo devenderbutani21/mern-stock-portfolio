@@ -17,7 +17,7 @@ function App() {
   return (
     <Router>
       <AppBar position='static'>
-        <Toolbar>
+        <Toolbar sx={{ background: 'linear-gradient(90deg, rgba(16,185,129,0.1) 0%, transparent 100%)' }}>
           <Typography variant='h6' sx={{ flexGrow: 1 }}>
             Stock Portfolio
           </Typography>

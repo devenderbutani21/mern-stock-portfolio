@@ -24,7 +24,7 @@ export const authAPI = {
 export const stockAPI = {
     getAll: () => api.get('/stocks'),
     getOne: (symbol) => api.get(`/stocks/${symbol}`),
-    getHistory: (symbol) => api.post(`/stocks/${symbol}/history`),
+    getHistory: (symbol) => api.get(`/stocks/${symbol}/history`),
 };
 
 export const watchlistAPI = {

@@ -7,7 +7,7 @@ import rateLimiter from '../utils/rateLimiter.js';
 export const getAllStocks = async (req,res) => {
     try {
         const stocks = await Stock.find();
-        
+
         // Process stocks sequentially to respect rate limit
         const stocksWithLive = [];
         for (const stock of stocks) {
@@ -16,11 +16,22 @@ export const getAllStocks = async (req,res) => {
                 stocksWithLive.push({ ...stock._doc, ...live });
             } catch (error) {
                 console.error(`Failed to fetch ${stock.symbol}:`, error.message);
-                // Return stock with cached/stale data if available
-                stocksWithLive.push(stock);
+                // Fallback to historical price data from Stock model
+                const currentPrice = stock.prices?.c || stock.initial_price || 0;
+                const previousPrice = stock.prices?.pc || stock.price_2007 || stock.price_2002 || currentPrice;
+                const change = currentPrice - previousPrice;
+                const changePercent = previousPrice ? (change / previousPrice * 100) : 0;
+                const fallback = {
+                    price: currentPrice,
+                    change: change,
+                    changePercent: changePercent,
+                    company: stock.company || stock.name,
+                    symbol: stock.symbol
+                };
+                stocksWithLive.push(fallback);
             }
         }
-        
+
         // Add queue info for debugging
         res.json({
             stocks: stocksWithLive,
@@ -37,12 +48,28 @@ export const getStockBySymbol = async (req,res) => {
         const stock = await Stock.findOne({ symbol: req.params.symbol.toUpperCase() });
         if(!stock) return res.status(404).json({ error: 'Stock not found' });
 
-        const live = await getLiveQuote(req.params.symbol);
-        res.json({ 
-            ...stock._doc, 
-            ...live,
-            queueLength: rateLimiter.getQueueLength()
-        });
+        try {
+            const live = await getLiveQuote(req.params.symbol);
+            res.json({
+                ...stock._doc,
+                ...live,
+                queueLength: rateLimiter.getQueueLength()
+            });
+        } catch (error) {
+            // Fallback to cached data
+            const currentPrice = stock.prices?.c || stock.initial_price || 0;
+            const previousPrice = stock.prices?.pc || stock.price_2007 || stock.price_2002 || currentPrice;
+            const change = currentPrice - previousPrice;
+            const changePercent = previousPrice ? (change / previousPrice * 100) : 0;
+            res.json({
+                ...stock._doc,
+                price: currentPrice,
+                change: change,
+                changePercent: changePercent,
+                company: stock.company || stock.name,
+                queueLength: rateLimiter.getQueueLength()
+            });
+        }
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
