@@ -48,7 +48,7 @@ const Login = () => {
           alignItems: 'center',
           justifyContent: 'center',
           pt: 4,
-          backgroundImage: 'radial-gradient(circle at 20% 50%, rgba(120,119,198,0.3) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(120,119,198,0.3) 0%, transparent 50%), radial-gradient(circle at 40% 80%, rgba(120,119,198,0.3) 0%, transparent 50%)',
+          backgroundImage: 'radial-gradient(circle at 20% 80%, rgba(16,185,129,0.15) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(16,185,129,0.1) 0%, transparent 50%)',
           backgroundColor: 'background.default'
         }}
       >

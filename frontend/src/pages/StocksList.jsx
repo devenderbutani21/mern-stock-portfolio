@@ -124,7 +124,7 @@ const StocksList = () => {
                       {stock.symbol}
                     </Typography>
                   </TableCell>
-                  <TableCell>
+                  <TableCell sx={{ fontFamily: 'SF Mono, Monaco, "Roboto Mono", monospace' }}>
                     <Typography variant="h5" fontWeight={800} color="text.primary">
                       {stock.price ? `$${stock.price.toFixed(2)}` : '—'}
                     </Typography>

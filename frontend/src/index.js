@@ -9,59 +9,35 @@ import { AuthProvider } from './context/AuthContext';
 const theme = createTheme({
   palette: {
     mode: 'dark',
-    primary: { main: green[500] },
-    secondary: { main: green[400] },
-    background: {
-      default: '#0a0a0a',
-      paper: '#161616',
-    },
-    success: { main: green[500] },
-    error: { main: '#ef5350' },
-    text: { primary: '#e0e0e0' },
+    primary: { main: '#10b981' },
+    background: { default: '#0f0f0f', paper: '#1a1a1a' },
   },
-  shape: { borderRadius: 12},
+  shape: { borderRadius: 12 },
+  typography: {
+    fontFamily: '"Inter", "SF Pro Display", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+  },
   components: {
     MuiPaper: {
       styleOverrides: {
         root: {
-          backgroundImage: 'linear-gradient(145deg, #1a1a1a, #161616)',
-          backdropFilter: 'blur(10px)',
-          border: '1px solid rgba(255,255,255,0.1)'
-        }
-      }
+          background: 'rgba(26,26,26,0.95)',
+          backdropFilter: 'blur(20px)',
+          border: '1px solid rgba(255,255,255,0.08)',
+          boxShadow: '0 8px 32px rgba(0,0,0,0.3)',
+        },
+      },
     },
     MuiCard: {
       styleOverrides: {
         root: {
-          boxShadow: '0 20px 40px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.05)',
-          transition: 'all 0.3s ease'
-        }
-      }
+          transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+          '&:hover': {
+            transform: 'translateY(-4px)',
+            boxShadow: '0 20px 40px rgba(0,0,0,0.4)',
+          },
+        },
+      },
     },
-    MuiChip: {
-      styleOverrides: {
-        root: {
-          height: 32,
-          fontWeight: 600,
-          fontSize: '0.875rem'
-        }
-      }
-    },
-    MuiButton: {
-      styleOverrides: {
-        root: {
-          '&:hover' : {
-            backgroundColor: 'rgba(255,255,255,0.05)',
-            transform: 'translateY(-1px)'
-          }
-        }
-      }
-    }
-  },
-  typography: {
-    fontFamily: '"Inter", "Segoe UI", sans-serif',
-    h5: { fontWeight: 700, color: '#ffffff' },
-    body1: { color: '#b0b0b0' }
   },
 });
 

@@ -16,8 +16,12 @@ function App() {
 
   return (
     <Router>
-      <AppBar position='static'>
-        <Toolbar sx={{ background: 'linear-gradient(90deg, rgba(16,185,129,0.1) 0%, transparent 100%)' }}>
+      <AppBar position='static' sx={{ 
+        background: 'rgba(16,22,26,0.95)', 
+        backdropFilter: 'blur(20px)',
+        boxShadow: '0 4px 20px rgba(0,0,0,0.3)'
+      }}>
+        <Toolbar sx={{ gap: 2 }}>
           <Typography variant='h6' sx={{ flexGrow: 1 }}>
             Stock Portfolio
           </Typography>
@@ -43,7 +47,7 @@ function App() {
           )}
         </Toolbar>
       </AppBar>
-      <Container sx={{ mt: 3 }}>
+      <Container maxWidth="lg" sx={{ mt: 3 }}>
         <Routes>
           <Route path="/" element={<StockList />} />
           <Route path="/stocks" element={<StockList />} />
