@@ -1,5 +1,4 @@
 import { BrowserRouter as Router, Routes, Route, Link, Navigate } from 'react-router-dom';
-import { AppBar, Toolbar, Typography, Button, Container } from '@mui/material';
 import StockList from './pages/StocksList';
 import Watchlist from './pages/Watchlist';
 import Login from './pages/Login';
@@ -16,42 +15,57 @@ function App() {
 
   return (
     <Router>
-      <AppBar position='static' sx={{ 
-        background: 'rgba(16,22,26,0.95)', 
-        backdropFilter: 'blur(20px)',
-        boxShadow: '0 4px 20px rgba(0,0,0,0.3)'
-      }}>
-        <Toolbar sx={{ gap: 2 }}>
-          <Typography variant='h6' sx={{ flexGrow: 1 }}>
-            Stock Portfolio
-          </Typography>
-          <Button color="inherit" component={Link} to="/stocks">
-            Stocks
-          </Button>
-          <Button color="inherit" component={Link} to="/watchlist">
-            Watchlist
-          </Button>
-          {isAuthenticated ? (
-            <Button color="inherit" onClick={logout}>
-              Logout
-            </Button>
-          ) : (
-            <>
-              <Button color="inherit" component={Link} to="/login">
-                Login
-              </Button>
-              <Button color="inherit" component={Link} to="/register">
-                Register
-              </Button>
-            </>
-          )}
-        </Toolbar>
-      </AppBar>
-      <Container maxWidth="lg" sx={{ mt: 3 }}>
+      <nav className="bg-gradient-to-r from-emerald-600 to-teal-600 shadow-lg sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            <h1 className="text-2xl font-bold text-white tracking-tight">
+              Stock Portfolio
+            </h1>
+            <div className="flex items-center space-x-4">
+              <Link
+                to="/stocks"
+                className="text-white hover:bg-emerald-700 px-4 py-2 rounded-lg font-medium transition-all duration-200"
+              >
+                Stocks
+              </Link>
+              <Link
+                to="/watchlist"
+                className="text-white hover:bg-emerald-700 px-4 py-2 rounded-lg font-medium transition-all duration-200"
+              >
+                Watchlist
+              </Link>
+              {isAuthenticated ? (
+                <button
+                  onClick={logout}
+                  className="text-white hover:bg-emerald-700 px-4 py-2 rounded-lg font-medium transition-all duration-200"
+                >
+                  Logout
+                </button>
+              ) : (
+                <>
+                  <Link
+                    to="/login"
+                    className="text-white hover:bg-emerald-700 px-4 py-2 rounded-lg font-medium transition-all duration-200"
+                  >
+                    Login
+                  </Link>
+                  <Link
+                    to="/register"
+                    className="bg-white text-emerald-600 hover:bg-emerald-50 px-4 py-2 rounded-lg font-semibold transition-all duration-200"
+                  >
+                    Register
+                  </Link>
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+      </nav>
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <Routes>
           <Route path="/" element={<StockList />} />
           <Route path="/stocks" element={<StockList />} />
-          <Route 
+          <Route
             path="/watchlist"
             element={
               <PrivateRoute>
@@ -60,11 +74,11 @@ function App() {
             }
           />
           <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} /> 
+          <Route path="/register" element={<Register />} />
         </Routes>
-      </Container>
+      </main>
     </Router>
   );
-};
+}
 
 export default App;

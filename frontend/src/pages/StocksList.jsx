@@ -1,25 +1,24 @@
-// src/pages/StocksList.jsx (replace your version)
 import { useEffect, useState } from 'react';
-import {
-  Card,
-  CardContent,
-  Typography,
-  Table,
-  TableBody,
-  TableHead,
-  TableRow,
-  TableCell,
-  Chip,
-  IconButton,
-  Skeleton,
-  Box,
-  Fade,
-} from '@mui/material';
-import AddIcon from '@mui/icons-material/AddCircleOutlineRounded';
-import TrendingUpIcon from '@mui/icons-material/TrendingUp';
-import TrendingDownIcon from '@mui/icons-material/TrendingDown';
 import { stockAPI, watchlistAPI } from '../services/api';
 import { useAuth } from '../context/AuthContext';
+
+const TrendingUpIcon = () => (
+  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+  </svg>
+);
+
+const TrendingDownIcon = () => (
+  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6" />
+  </svg>
+);
+
+const AddIcon = () => (
+  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+  </svg>
+);
 
 const StocksList = () => {
   const [stocks, setStocks] = useState([]);
@@ -31,7 +30,6 @@ const StocksList = () => {
       try {
         setLoading(true);
         const res = await stockAPI.getAll();
-        // Backend returns { stocks: [...], queueLength, cacheStats }
         setStocks(Array.isArray(res.data.stocks) ? res.data.stocks : []);
       } catch (err) {
         console.error('Failed to load stocks:', err);
@@ -46,10 +44,9 @@ const StocksList = () => {
   const handleAddToWatchlist = async (stockId) => {
     try {
       await watchlistAPI.add(stockId);
-      // Optimistic update
-      setStocks(prev => 
-        prev.map(stock => 
-          stock._id === stockId 
+      setStocks(prev =>
+        prev.map(stock =>
+          stock._id === stockId
             ? { ...stock, inWatchlist: true }
             : stock
         )
@@ -59,118 +56,131 @@ const StocksList = () => {
     }
   };
 
-  const getChangeColor = (changePercent) =>
-    changePercent >= 0 ? 'success' : 'error';
+  const getCurrentTime = () => {
+    return new Date().toLocaleTimeString('en-US', { 
+      hour: '2-digit', 
+      minute: '2-digit', 
+      second: '2-digit' 
+    });
+  };
 
   if (loading) {
     return (
-      <Card sx={{ height: 400 }}>
-        <CardContent>
-          <Skeleton variant="rectangular" height={60} sx={{ mb: 2 }} />
-          <Skeleton variant="rectangular" height={50} />
-          <Skeleton variant="rectangular" height={50} sx={{ mt: 1 }} />
-        </CardContent>
-      </Card>
+      <div className="bg-white rounded-2xl shadow-xl p-6 min-h-[400px] animate-pulse">
+        <div className="flex justify-between items-center mb-6">
+          <div className="h-10 bg-gray-200 rounded-lg w-48"></div>
+          <div className="h-6 bg-gray-200 rounded w-24"></div>
+        </div>
+        {[...Array(5)].map((_, i) => (
+          <div key={i} className="flex items-center py-4 border-b border-gray-100 last:border-0">
+            <div className="h-6 bg-gray-200 rounded w-32"></div>
+            <div className="h-6 bg-gray-200 rounded w-16 ml-4"></div>
+            <div className="h-8 bg-gray-200 rounded w-20 ml-4"></div>
+            <div className="h-8 bg-gray-200 rounded w-24 ml-4"></div>
+          </div>
+        ))}
+      </div>
     );
   }
 
   return (
-    <Fade in={!loading} timeout={600}>
-      <Card sx={{ minHeight: 400 }}>
-        <CardContent>
-          <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
-            <Typography variant="h4" sx={{ fontWeight: 800, flexGrow: 1 }}>
-              Live Markets
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
-              {new Date().toLocaleTimeString()}
-            </Typography>
-          </Box>
+    <div className="bg-white rounded-2xl shadow-xl overflow-hidden animate-fade-in">
+      <div className="bg-gradient-to-r from-emerald-50 to-teal-50 px-6 py-5 border-b border-emerald-100">
+        <div className="flex justify-between items-center">
+          <h2 className="text-3xl font-extrabold text-gray-900">
+            Live Markets
+          </h2>
+          <span className="text-sm text-gray-500 font-medium bg-white px-3 py-1 rounded-full shadow-sm">
+            {getCurrentTime()}
+          </span>
+        </div>
+      </div>
 
-          <Table sx={{ '& .MuiTableCell-root': { py: 2.5 } }}>
-            <TableHead>
-              <TableRow>
-                <TableCell sx={{ fontWeight: 700, color: 'text.primary' }}>
-                  Company
-                </TableCell>
-                <TableCell sx={{ fontWeight: 700, color: 'text.primary' }}>
-                  Symbol
-                </TableCell>
-                <TableCell sx={{ fontWeight: 700, color: 'text.primary' }}>
-                  Price
-                </TableCell>
-                <TableCell sx={{ fontWeight: 700, color: 'text.primary' }}>
-                  Change
-                </TableCell>
-                <TableCell align="right"></TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {stocks.map((stock, index) => (
-                <TableRow 
-                  key={stock._id}
-                  sx={{ 
-                    transition: 'all 0.2s ease',
-                    '&:hover': { transform: 'translateY(-2px)' }
-                  }}
-                >
-                  <TableCell>
-                    <Typography variant="body1" fontWeight={600}>
-                      {stock.company}
-                    </Typography>
-                  </TableCell>
-                  <TableCell>
-                    <Typography variant="h6" color="primary.main" fontWeight={700}>
-                      {stock.symbol}
-                    </Typography>
-                  </TableCell>
-                  <TableCell sx={{ fontFamily: 'SF Mono, Monaco, "Roboto Mono", monospace' }}>
-                    <Typography variant="h5" fontWeight={800} color="text.primary">
-                      {stock.price ? `$${stock.price.toFixed(2)}` : '—'}
-                    </Typography>
-                  </TableCell>
-                  <TableCell>
-                    {stock.changePercent !== undefined && (
-                      <Chip
-                        label={`${stock.changePercent.toFixed(2)}%`}
-                        color={getChangeColor(stock.changePercent)}
-                        icon={
-                          stock.changePercent >= 0 ? (
-                            <TrendingUpIcon fontSize="small" />
-                          ) : (
-                            <TrendingDownIcon fontSize="small" />
-                          )
-                        }
-                        sx={{ fontSize: '0.875rem', fontWeight: 700 }}
-                      />
-                    )}
-                  </TableCell>
-                  <TableCell align="right">
-                    {isAuthenticated && (
-                      <IconButton
-                        onClick={() => handleAddToWatchlist(stock._id)}
-                        sx={{ 
-                          bgcolor: 'rgba(16,185,129,0.1)',
-                          '&:hover': { bgcolor: 'primary.main', color: 'white' }
-                        }}
-                      >
-                        <AddIcon />
-                      </IconButton>
-                    )}
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+      <div className="overflow-x-auto">
+        <table className="w-full">
+          <thead>
+            <tr className="bg-gray-50 border-b border-gray-200">
+              <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
+                Company
+              </th>
+              <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
+                Symbol
+              </th>
+              <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
+                Price
+              </th>
+              <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
+                Change
+              </th>
+              <th className="px-6 py-4 text-right"></th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-gray-100">
+            {stocks.map((stock) => (
+              <tr
+                key={stock._id}
+                className="hover:bg-gray-50 transition-all duration-200 hover:-translate-y-0.5"
+              >
+                <td className="px-6 py-4">
+                  <span className="text-base font-semibold text-gray-900">
+                    {stock.company}
+                  </span>
+                </td>
+                <td className="px-6 py-4">
+                  <span className="text-lg font-bold text-emerald-600">
+                    {stock.symbol}
+                  </span>
+                </td>
+                <td className="px-6 py-4">
+                  <span className="text-xl font-extrabold text-gray-900">
+                    {stock.price ? `$${stock.price.toFixed(2)}` : '—'}
+                  </span>
+                </td>
+                <td className="px-6 py-4">
+                  {stock.changePercent !== undefined && (
+                    <span
+                      className={`inline-flex items-center px-3 py-1.5 rounded-full text-sm font-bold ${
+                        stock.changePercent >= 0
+                          ? 'bg-emerald-100 text-emerald-700'
+                          : 'bg-red-100 text-red-700'
+                      }`}
+                    >
+                      {stock.changePercent >= 0 ? (
+                        <TrendingUpIcon />
+                      ) : (
+                        <TrendingDownIcon />
+                      )}
+                      <span className="ml-1.5">
+                        {stock.changePercent.toFixed(2)}%
+                      </span>
+                    </span>
+                  )}
+                </td>
+                <td className="px-6 py-4 text-right">
+                  {isAuthenticated && (
+                    <button
+                      onClick={() => handleAddToWatchlist(stock._id)}
+                      className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-emerald-50 text-emerald-600 hover:bg-emerald-600 hover:text-white transition-all duration-200 shadow-sm hover:shadow-md"
+                      aria-label="Add to watchlist"
+                    >
+                      <AddIcon />
+                    </button>
+                  )}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
 
-          {stocks.length === 0 && !loading && (
-            <Typography variant="h6" color="text.secondary" align="center" sx={{ mt: 4 }}>
-              No stocks available. Check backend.
-            </Typography>
-          )}
-        </CardContent>
-      </Card>
-    </Fade>
+      {stocks.length === 0 && !loading && (
+        <div className="text-center py-16">
+          <p className="text-xl text-gray-500 font-medium">
+            No stocks available. Check backend.
+          </p>
+        </div>
+      )}
+    </div>
   );
 };
 

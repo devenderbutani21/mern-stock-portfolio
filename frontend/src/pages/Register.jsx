@@ -1,16 +1,5 @@
-// src/pages/Register.jsx (replace with Login but add name field)
 import { useState } from 'react';
-import {
-  Card,
-  CardContent,
-  TextField,
-  Button,
-  Typography,
-  Alert,
-  Box,
-  Fade,
-} from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { authAPI } from '../services/api';
 
 const Register = () => {
@@ -23,7 +12,7 @@ const Register = () => {
     e.preventDefault();
     setError('');
     setLoading(true);
-    
+
     try {
       await authAPI.register(formData.name, formData.email, formData.password);
       navigate('/login');
@@ -35,112 +24,98 @@ const Register = () => {
   };
 
   return (
-    <Fade in timeout={800}>
-      <Box
-        sx={{
-          minHeight: '100vh',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          pt: 4,
-          backgroundImage: 'radial-gradient(circle at 20% 80%, rgba(16,185,129,0.15) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(16,185,129,0.1) 0%, transparent 50%)',
-          backgroundColor: 'background.default'
-        }}
-      >
-        <Card sx={{ 
-          maxWidth: 420, 
-          backdropFilter: 'blur(20px)',
-          boxShadow: '0 25px 45px -20px rgba(0,0,0,0.5)'
-        }}>
-          <CardContent sx={{ p: 5 }}>
-            <Typography 
-              variant="h4" 
-              sx={{ 
-                fontWeight: 800, 
-                mb: 1, 
-                background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent'
-              }}
-            >
-              Join Stock Portfolio
-            </Typography>
-            <Typography variant="body1" color="text.secondary" mb={4}>
-              Create your free account
-            </Typography>
-            
+    <div className="min-h-screen flex items-center justify-center px-4 py-12 bg-gradient-to-br from-emerald-50 via-white to-teal-50">
+      <div className="w-full max-w-md">
+        <div className="bg-white rounded-3xl shadow-2xl overflow-hidden backdrop-blur-sm">
+          <div className="px-10 py-12">
+            <div className="text-center mb-8">
+              <h1 className="text-4xl font-extrabold bg-gradient-to-r from-emerald-500 to-teal-600 bg-clip-text text-transparent mb-2">
+                Join Stock Portfolio
+              </h1>
+              <p className="text-gray-600">Create your free account</p>
+            </div>
+
             {error && (
-              <Alert severity="error" sx={{ mb: 3 }}>
-                {error}
-              </Alert>
+              <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl">
+                <p className="text-red-700 font-medium text-sm">{error}</p>
+              </div>
             )}
-            
-            <form onSubmit={handleSubmit}>
-              <TextField
-                label="Full Name"
-                fullWidth
-                margin="normal"
-                value={formData.name}
-                onChange={(e) => setFormData({...formData, name: e.target.value})}
-                sx={{
-                  '& .MuiOutlinedInput-root': {
-                    borderRadius: 3,
-                    backgroundColor: 'background.paper',
-                    '& fieldset': { borderColor: 'rgba(255,255,255,0.1)' }
-                  }
-                }}
-              />
-              <TextField
-                label="Email"
-                type="email"
-                fullWidth
-                margin="normal"
-                value={formData.email}
-                onChange={(e) => setFormData({...formData, email: e.target.value})}
-                sx={{
-                  '& .MuiOutlinedInput-root': {
-                    borderRadius: 3,
-                    backgroundColor: 'background.paper',
-                    '& fieldset': { borderColor: 'rgba(255,255,255,0.1)' }
-                  }
-                }}
-              />
-              <TextField
-                label="Password"
-                type="password"
-                fullWidth
-                margin="normal"
-                value={formData.password}
-                onChange={(e) => setFormData({...formData, password: e.target.value})}
-                sx={{
-                  '& .MuiOutlinedInput-root': {
-                    borderRadius: 3,
-                    backgroundColor: 'background.paper',
-                    '& fieldset': { borderColor: 'rgba(255,255,255,0.1)' }
-                  }
-                }}
-              />
-              <Button
+
+            <form onSubmit={handleSubmit} className="space-y-5">
+              <div>
+                <label htmlFor="name" className="block text-sm font-semibold text-gray-700 mb-2">
+                  Full Name
+                </label>
+                <input
+                  id="name"
+                  type="text"
+                  value={formData.name}
+                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 transition-all duration-200 outline-none"
+                  placeholder="John Doe"
+                  required
+                />
+              </div>
+
+              <div>
+                <label htmlFor="email" className="block text-sm font-semibold text-gray-700 mb-2">
+                  Email
+                </label>
+                <input
+                  id="email"
+                  type="email"
+                  value={formData.email}
+                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 transition-all duration-200 outline-none"
+                  placeholder="you@example.com"
+                  required
+                />
+              </div>
+
+              <div>
+                <label htmlFor="password" className="block text-sm font-semibold text-gray-700 mb-2">
+                  Password
+                </label>
+                <input
+                  id="password"
+                  type="password"
+                  value={formData.password}
+                  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                  className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 transition-all duration-200 outline-none"
+                  placeholder="••••••••"
+                  required
+                  minLength={6}
+                />
+              </div>
+
+              <button
                 type="submit"
-                variant="contained"
-                fullWidth
-                sx={{ 
-                  mt: 3, 
-                  py: 1.5, 
-                  borderRadius: 2,
-                  fontSize: '1.1rem',
-                  fontWeight: 700,
-                  boxShadow: '0 10px 30px rgba(16,185,129,0.4)'
-                }}
                 disabled={loading}
+                className="w-full py-3.5 px-4 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-bold rounded-xl shadow-lg shadow-emerald-500/30 hover:shadow-emerald-500/40 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
               >
-                Create Account
-              </Button>
+                {loading ? (
+                  <svg className="animate-spin h-6 w-6 text-white" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                  </svg>
+                ) : (
+                  'Create Account'
+                )}
+              </button>
             </form>
-          </CardContent>
-        </Card>
-      </Box>
-    </Fade>
+          </div>
+
+          <div className="px-10 py-4 bg-gray-50 border-t border-gray-100">
+            <p className="text-center text-sm text-gray-600">
+              Already have an account?{' '}
+              <Link to="/login" className="text-emerald-600 hover:text-emerald-700 font-semibold underline">
+                Sign in
+              </Link>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 };
 
