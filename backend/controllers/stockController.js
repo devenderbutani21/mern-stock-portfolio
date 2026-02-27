@@ -12,12 +12,21 @@ export const getAllStocks = async (req,res) => {
         const stocksWithLive = [];
         for (const stock of stocks) {
             try {
-                const live = await getLiveQuote(stock.symbol);
-                stocksWithLive.push({ 
-                    ...stock._doc, 
-                    ...live, 
-                    company: stock.company || stock.name 
-                });
+                const cachedQuote = cache.get(`quote:${stock.symbol.toUpperCase()}`);
+                if (cachedQuote) {
+                    stocksWithLive.push({
+                        ...stock._doc,
+                        ...cachedQuote,
+                        company: stock.company || stock.name
+                    });
+                } else {
+                    const live = await getLiveQuote(stock.symbol);
+                    stocksWithLive.push({
+                        ...stock._doc,
+                        ...live,
+                        company: stock.company || stock.name
+                    });
+                }
             } catch (error) {
                 console.error(`Failed to fetch ${stock.symbol}:`, error.message);
                 // Fallback to historical price data from Stock model

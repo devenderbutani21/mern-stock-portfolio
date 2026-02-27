@@ -1,10 +1,11 @@
 /**
  * Rate Limiter with Queue System
- * Enforces 1 request per second for Alpha Vantage free tier
+ * Enforces rate limiting for Finnhub free tier (60 requests/minute)
+ * Default: 10 requests/second to stay well within limits
  */
 
 class RateLimiter {
-  constructor(requestsPerSecond = 1) {
+  constructor(requestsPerSecond = 10) {
     this.requestsPerSecond = requestsPerSecond;
     this.queue = [];
     this.processing = false;

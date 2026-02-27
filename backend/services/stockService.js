@@ -3,10 +3,10 @@ import rateLimiter from "../utils/rateLimiter.js";
 import cache from "../utils/cache.js";
 
 const API_KEY = process.env.STOCK_API_KEY;
-const BASE_URL = 'https://www.alphavantage.co/query';
+const BASE_URL = 'https://finnhub.io/api/v1';
 
-// Cache TTL for live quotes (1 minute to stay fresh but reduce API calls)
-const LIVE_QUOTE_TTL = 60000;
+// Cache TTL for live quotes (5 minutes to reduce API calls while staying reasonably fresh)
+const LIVE_QUOTE_TTL = 300000;
 
 export const getLiveQuote = async (symbol, useCache = true) => {
   const normalizedSymbol = symbol.toUpperCase();
@@ -24,36 +24,35 @@ export const getLiveQuote = async (symbol, useCache = true) => {
 
   try {
     const apiKey = process.env.STOCK_API_KEY || 'demo';
-    
-    // Execute through rate limiter (1 req/sec)
+
+    // Execute through rate limiter (60 req/sec for Finnhub free tier)
     const data = await rateLimiter.execute(async () => {
-      const response = await axios.get(BASE_URL, {
+      const response = await axios.get(`${BASE_URL}/quote`, {
         params: {
-          function: 'GLOBAL_QUOTE',
           symbol: normalizedSymbol,
-          apikey: apiKey
+          token: apiKey
         }
       });
       return response.data;
     });
 
-    console.log(`API response for ${normalizedSymbol}:`, data);
+    console.log(`Finnhub response for ${normalizedSymbol}:`, data);
 
-    const quote = data['Global Quote'];
-    if (!quote) {
-      // Check if it's a rate limit message
-      if (data.Information) {
-        throw new Error(`Alpha Vantage rate limit: ${data.Information}`);
-      }
-      throw new Error(`No quote data: ${JSON.stringify(data)}`);
+    // Finnhub returns error code if symbol is invalid
+    if (data.s === 'error' || !data.c) {
+      throw new Error(`Invalid symbol or no data: ${normalizedSymbol}`);
     }
 
     const result = {
-      symbol: quote['01. symbol'],
-      price: parseFloat(quote['05. price']) || 0,
-      change: parseFloat(quote['09. change']) || 0,
-      changePercent: parseFloat(quote['10. change percent']?.replace('%', '')) || 0,
-      volume: parseInt(quote['06. volume']) || 0
+      symbol: normalizedSymbol,
+      price: data.c || 0,  // Current price
+      change: data.d || 0,  // Change
+      changePercent: data.dp || 0,  // Change percent
+      volume: data.v || 0,  // Volume
+      high: data.h || 0,  // High price of the day
+      low: data.l || 0,  // Low price of the day
+      open: data.o || 0,  // Open price of the day
+      previousClose: data.pc || 0  // Previous close price
     };
 
     // Cache the result
@@ -62,7 +61,7 @@ export const getLiveQuote = async (symbol, useCache = true) => {
 
     return result;
   } catch (error) {
-    console.error(`Alpha Vantage error for ${normalizedSymbol}:`, error.message);
+    console.error(`Finnhub error for ${normalizedSymbol}:`, error.message);
     throw new Error(`Failed to fetch ${normalizedSymbol}: ${error.message}`);
   }
 };
@@ -86,33 +85,39 @@ export const getHistoricalData = async (symbol, days = 30, useCache = true) => {
   try {
     const apiKey = process.env.STOCK_API_KEY || 'demo';
 
-    // Execute through rate limiter (1 req/sec)
+    // Calculate date range
+    const endDate = new Date();
+    const startDate = new Date();
+    startDate.setDate(startDate.getDate() - days);
+
+    // Execute through rate limiter (60 req/sec for Finnhub free tier)
     const data = await rateLimiter.execute(async () => {
-      const response = await axios.get(BASE_URL, {
+      const response = await axios.get(`${BASE_URL}/stock/candle`, {
         params: {
-          function: 'TIME_SERIES_DAILY',
           symbol: normalizedSymbol,
-          outputsize: 'compact',
-          apikey: apiKey
+          resolution: 'D',  // Daily candles
+          from: startDate.getTime() / 1000,  // Unix timestamp (seconds)
+          to: endDate.getTime() / 1000,
+          token: apiKey
         }
       });
       return response.data;
     });
 
-    const timeSeries = data['Time Series (Daily)'];
-    if (!timeSeries) {
-      if (data.Information) {
-        throw new Error(`Alpha Vantage rate limit: ${data.Information}`);
-      }
-      throw new Error('No historical data');
+    // Check for valid data
+    if (data.s === 'no_data' || !data.c || data.c.length === 0) {
+      throw new Error(`No historical data for ${normalizedSymbol}`);
     }
 
-    const result = Object.entries(timeSeries)
-      .slice(0, days)
-      .map(([date, values]) => ({
-        date,
-        price: parseFloat(values['4. close'])
-      }));
+    // Finnhub returns arrays: t=timestamps, o=open, h=high, l=low, c=close, v=volume
+    const result = data.t.map((timestamp, index) => ({
+      date: new Date(timestamp * 1000).toISOString().split('T')[0],
+      price: data.c[index],  // Close price
+      open: data.o[index],
+      high: data.h[index],
+      low: data.l[index],
+      volume: data.v[index]
+    })).reverse();  // Most recent first
 
     // Cache the result
     cache.set(cacheKey, result, HISTORICAL_TTL);
