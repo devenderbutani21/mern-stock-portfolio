@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { stockAPI, watchlistAPI } from '../services/api';
 import { useAuth } from '../context/AuthContext';
+import SearchBar from '../components/searchBar';
 
 const TrendingUpIcon = () => (
   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -93,6 +94,10 @@ const StocksList = () => {
           <span className="text-sm text-gray-500 font-medium bg-white px-3 py-1 rounded-full shadow-sm">
             {getCurrentTime()}
           </span>
+        </div>
+
+        <div className='mt-4'>
+          <SearchBar />
         </div>
       </div>
 

@@ -25,6 +25,7 @@ export const stockAPI = {
     getAll: () => api.get('/stocks'),
     getOne: (symbol) => api.get(`/stocks/${symbol}`),
     getHistory: (symbol) => api.get(`/stocks/${symbol}/history`),
+    search: (query) => api.get(`/stocks/search?query=${query}`),
 };
 
 export const watchlistAPI = {
