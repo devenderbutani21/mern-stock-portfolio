@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { stockAPI, watchlistAPI } from '../services/api';
 import { useAuth } from '../context/AuthContext';
-import SearchBar from '../components/searchBar';
+import SearchBar from '../components/SearchBar';
 
 const TrendingUpIcon = () => (
   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -67,10 +67,10 @@ const StocksList = () => {
 
   if (loading) {
     return (
-      <div className="bg-white rounded-2xl shadow-xl p-6 min-h-[400px] animate-pulse">
+      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 min-h-[400px] animate-pulse">
         <div className="flex justify-between items-center mb-6">
-          <div className="h-10 bg-gray-200 rounded-lg w-48"></div>
-          <div className="h-6 bg-gray-200 rounded w-24"></div>
+          <div className="h-10 bg-gray-200 dark:bg-gray-700 rounded-lg w-48"></div>
+          <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-24"></div>
         </div>
         {[...Array(5)].map((_, i) => (
           <div key={i} className="flex items-center py-4 border-b border-gray-100 last:border-0">
@@ -85,13 +85,15 @@ const StocksList = () => {
   }
 
   return (
-    <div className="bg-white rounded-2xl shadow-xl overflow-hidden animate-fade-in">
-      <div className="bg-gradient-to-r from-emerald-50 to-teal-50 px-6 py-5 border-b border-emerald-100">
+    <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden animate-fade-in">
+      <div className="bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-900/30 
+    dark:to-teal-900/30 px-6 py-5 border-b border-emerald-100 dark:border-emerald-800">
         <div className="flex justify-between items-center">
-          <h2 className="text-3xl font-extrabold text-gray-900">
+          <h2 className="text-3xl font-extrabold text-gray-900 dark:text-white">
             Live Markets
           </h2>
-          <span className="text-sm text-gray-500 font-medium bg-white px-3 py-1 rounded-full shadow-sm">
+           <span className="text-sm text-gray-500 dark:text-gray-400 font-medium bg-white dark:bg-gray-700 
+         px-3 py-1 rounded-full shadow-sm">
             {getCurrentTime()}
           </span>
         </div>
@@ -104,40 +106,45 @@ const StocksList = () => {
       <div className="overflow-x-auto">
         <table className="w-full">
           <thead>
-            <tr className="bg-gray-50 border-b border-gray-200">
-              <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
-                Company
-              </th>
-              <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
-                Symbol
-              </th>
-              <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
-                Price
-              </th>
-              <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
-                Change
-              </th>
-              <th className="px-6 py-4 text-right"></th>
-            </tr>
+              <tr className="bg-gray-50 dark:bg-gray-700 border-b border-gray-200 dark:border-gray-600">
+                <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 dark:text-gray-300 
+         uppercase tracking-wider">
+                  Company
+                </th>
+                <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 dark:text-gray-300 
+          uppercase tracking-wider">
+                    Symbol
+                </th>
+                <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 dark:text-gray-300 
+          uppercase tracking-wider">
+                    Price
+                </th>
+                <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 dark:text-gray-300 
+          uppercase tracking-wider">
+                    Change
+                </th>
+                <th className="px-6 py-4 text-right"></th>
+              </tr>
+
           </thead>
-          <tbody className="divide-y divide-gray-100">
+          <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
             {stocks.map((stock) => (
               <tr
                 key={stock._id}
-                className="hover:bg-gray-50 transition-all duration-200 hover:-translate-y-0.5"
+                className="hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-200 hover:-translate-y-0.5"
               >
                 <td className="px-6 py-4">
-                  <span className="text-base font-semibold text-gray-900">
+                  <span className="text-base font-semibold text-gray-900 dark:text-white">
                     {stock.company}
                   </span>
                 </td>
                 <td className="px-6 py-4">
-                  <span className="text-lg font-bold text-emerald-600">
+                  <span className="text-lg font-bold text-emerald-600 dark:text-emerald-400">
                     {stock.symbol}
                   </span>
                 </td>
                 <td className="px-6 py-4">
-                  <span className="text-xl font-extrabold text-gray-900">
+                  <span className="text-xl font-extrabold text-gray-900 dark:text-white">
                     {stock.price ? `$${stock.price.toFixed(2)}` : '—'}
                   </span>
                 </td>
@@ -146,8 +153,8 @@ const StocksList = () => {
                     <span
                       className={`inline-flex items-center px-3 py-1.5 rounded-full text-sm font-bold ${
                         stock.changePercent >= 0
-                          ? 'bg-emerald-100 text-emerald-700'
-                          : 'bg-red-100 text-red-700'
+                          ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/50 dark:text-emerald-400'
+                          : 'bg-red-100 text-red-700 dark:bg-red-900/50 dark:text-red-400' 
                       }`}
                     >
                       {stock.changePercent >= 0 ? (
@@ -165,7 +172,10 @@ const StocksList = () => {
                   {isAuthenticated && (
                     <button
                       onClick={() => handleAddToWatchlist(stock._id)}
-                      className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-emerald-50 text-emerald-600 hover:bg-emerald-600 hover:text-white transition-all duration-200 shadow-sm hover:shadow-md"
+                      className="inline-flex items-center justify-center w-10 h-10 rounded-full 
+         bg-emerald-50 text-emerald-600 hover:bg-emerald-600 hover:text-white dark:bg-emerald-900/30 
+         dark:text-emerald-400 dark:hover:bg-emerald-600 dark:hover:text-white transition-all duration-200 shadow-sm
+         hover:shadow-md"
                       aria-label="Add to watchlist"
                     >
                       <AddIcon />
@@ -180,7 +190,7 @@ const StocksList = () => {
 
       {stocks.length === 0 && !loading && (
         <div className="text-center py-16">
-          <p className="text-xl text-gray-500 font-medium">
+          <p className="text-xl text-gray-500 dark:text-gray-400 font-medium">
             No stocks available. Check backend.
           </p>
         </div>

@@ -3,6 +3,7 @@ import StockList from './pages/StocksList';
 import Watchlist from './pages/Watchlist';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import ThemeToggle from './components/ThemeToggle';
 import { useAuth } from './context/AuthContext';
 
 const PrivateRoute = ({ children }) => {
@@ -15,7 +16,7 @@ function App() {
 
   return (
     <Router>
-      <nav className="bg-gradient-to-r from-emerald-600 to-teal-600 shadow-lg sticky top-0 z-50">
+      <nav className="bg-gradient-to-r from-emerald-600 to-teal-600 dark:from-emerald-800 dark:to-teal-800 shadow-lg sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <h1 className="text-2xl font-bold text-white tracking-tight">
@@ -24,20 +25,20 @@ function App() {
             <div className="flex items-center space-x-4">
               <Link
                 to="/stocks"
-                className="text-white hover:bg-emerald-700 px-4 py-2 rounded-lg font-medium transition-all duration-200"
+                className="text-white hover:bg-emerald-700 dark:hover:bg-emerald-900 px-4 py-2 rounded-lg font-medium transition-all duration-200"
               >
                 Stocks
               </Link>
               <Link
                 to="/watchlist"
-                className="text-white hover:bg-emerald-700 px-4 py-2 rounded-lg font-medium transition-all duration-200"
+                className="text-white hover:bg-emerald-700 dark:hover:bg-emerald-900 px-4 py-2 rounded-lg font-medium transition-all duration-200"
               >
                 Watchlist
               </Link>
               {isAuthenticated ? (
                 <button
                   onClick={logout}
-                  className="text-white hover:bg-emerald-700 px-4 py-2 rounded-lg font-medium transition-all duration-200"
+                  className="text-white hover:bg-emerald-700 dark:hover:bg-emerald-900 px-4 py-2 rounded-lg font-medium transition-all duration-200"
                 >
                   Logout
                 </button>
@@ -45,18 +46,19 @@ function App() {
                 <>
                   <Link
                     to="/login"
-                    className="text-white hover:bg-emerald-700 px-4 py-2 rounded-lg font-medium transition-all duration-200"
+                    className="text-white hover:bg-emerald-700 dark:hover:bg-emerald-900 px-4 py-2 rounded-lg font-medium transition-all duration-200"
                   >
                     Login
                   </Link>
                   <Link
                     to="/register"
-                    className="bg-white text-emerald-600 hover:bg-emerald-50 px-4 py-2 rounded-lg font-semibold transition-all duration-200"
+                    className="bg-white text-emerald-600 hover:bg-emerald-50 dark:bg-gray-800 dark:text-emerald-400 dark:hover:bg-gray-700 px-4 py-2 rounded-lg font-semibold transition-all duration-200"
                   >
                     Register
                   </Link>
                 </>
               )}
+              <ThemeToggle />
             </div>
           </div>
         </div>

@@ -74,15 +74,17 @@ const Watchlist = () => {
   }
 
   return (
-    <div className="bg-white rounded-2xl shadow-xl overflow-hidden animate-fade-in">
-      <div className="bg-gradient-to-r from-emerald-50 to-teal-50 px-6 py-5 border-b border-emerald-100">
+    <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden animate-fade-in">
+      <div className="bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-900/30 dark:to-teal-900/30 
+        px-6 py-5 border-b border-emerald-100 dark:border-emerald-800">
         <div className="flex justify-between items-center">
-          <h2 className="text-3xl font-extrabold text-gray-900">
+          <h2 className="text-3xl font-extrabold text-gray-900 dark:text-white">
             My Watchlist
           </h2>
           <button
             onClick={loadWatchlist}
-            className="p-2 rounded-full text-gray-500 hover:bg-gray-100 hover:text-gray-700 transition-all duration-200"
+            className="p-2 rounded-full text-gray-500 dark:text-gray-400 hover:bg-gray-100 
+        dark:hover:bg-gray-700 hover:text-gray-700 dark:hover:text-white transition-all duration-200"
             aria-label="Refresh"
           >
             <RefreshIcon />
@@ -91,22 +93,24 @@ const Watchlist = () => {
       </div>
 
       {error && (
-        <div className="mx-6 mt-4 p-4 bg-red-50 border border-red-200 rounded-xl">
-          <p className="text-red-700 font-medium">{error}</p>
+        <div className="mx-6 mt-4 p-4 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 
+        rounded-xl">
+          <p className="text-red-700 dark:text-red-400 font-medium">{error}</p>
         </div>
       )}
 
       {items.length === 0 ? (
         <div className="text-center py-16 px-6">
-          <div className="w-20 h-20 mx-auto mb-4 bg-gray-100 rounded-full flex items-center justify-center">
+          <div className="w-20 h-20 mx-auto mb-4 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center 
+        justify-center">
             <svg className="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
             </svg>
           </div>
-          <h3 className="text-xl font-semibold text-gray-700 mb-2">
+          <h3 className="text-xl font-semibold text-gray-700 dark:text-gray-300 mb-2">
             Your watchlist is empty
           </h3>
-          <p className="text-gray-500">
+          <p className="text-gray-500 dark:text-gray-400">
             Add stocks from the Stocks page to get started
           </p>
         </div>
@@ -114,42 +118,46 @@ const Watchlist = () => {
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="bg-gray-50 border-b border-gray-200">
-                <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
+              <tr className="bg-gray-50 dark:bg-gray-700 border-b border-gray-200 dark:border-gray-600">
+                <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 dark:text-gray-300 
+         uppercase tracking-wider">
                   Company
                 </th>
-                <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
+                <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 dark:text-gray-300 
+         uppercase tracking-wider">
                   Symbol
                 </th>
-                <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
+                <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 dark:text-gray-300 
+         uppercase tracking-wider">
                   Price
                 </th>
-                <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
+                <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 dark:text-gray-300 
+         uppercase tracking-wider">
                   Change
                 </th>
                 <th className="px-6 py-4 text-right"></th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-100">
+            <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
               {items.map((item) => {
                 const stock = item.stock || (typeof item.stockId === 'object' ? item.stockId : {});
                 return (
                   <tr
                     key={item._id}
-                    className="hover:bg-gray-50 transition-all duration-200 hover:-translate-y-0.5"
+                    className="hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-200 hover:-translate-y-0.5"
                   >
                     <td className="px-6 py-4">
-                      <span className="text-base font-semibold text-gray-900">
+                      <span className="text-base font-semibold text-gray-900 dark:text-white">
                         {stock.company}
                       </span>
                     </td>
                     <td className="px-6 py-4">
-                      <span className="text-lg font-bold text-emerald-600">
+                      <span className="text-lg font-bold text-emerald-600 dark:text-emerald-400">
                         {stock.symbol}
                       </span>
                     </td>
                     <td className="px-6 py-4">
-                      <span className="text-xl font-extrabold text-gray-900">
+                      <span className="text-xl font-extrabold text-gray-900 dark:text-white">
                         {stock.price ? `$${stock.price.toFixed(2)}` : '—'}
                       </span>
                     </td>
@@ -158,8 +166,8 @@ const Watchlist = () => {
                         <span
                           className={`inline-flex items-center px-3 py-1.5 rounded-full text-sm font-bold ${
                             stock.changePercent >= 0
-                              ? 'bg-emerald-100 text-emerald-700'
-                              : 'bg-red-100 text-red-700'
+                              ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/50 dark:text-emerald-400'
+                              : 'bg-red-100 text-red-700 dark:bg-red-900/50 dark:text-red-400'
                           }`}
                         >
                           {stock.changePercent >= 0 ? (
@@ -178,7 +186,7 @@ const Watchlist = () => {
                     <td className="px-6 py-4 text-right">
                       <button
                         onClick={() => handleDelete(item._id)}
-                        className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-red-50 text-red-600 hover:bg-red-600 hover:text-white transition-all duration-200 shadow-sm hover:shadow-md"
+                        className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-red-50 text-red-600 hover:bg-red-600 hover:text-white dark:bg-red-900/30 dark:text-red-400 dark:hover:bg-red-600 dark:hover:text-white transition-all duration-200 shadow-sm hover:shadow-md"
                         aria-label="Remove from watchlist"
                       >
                         <DeleteIcon />

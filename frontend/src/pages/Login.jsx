@@ -28,26 +28,30 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 py-12 bg-gradient-to-br from-emerald-50 via-white to-teal-50">
+    <div className="min-h-screen flex items-center justify-center px-4 py-12 bg-gradient-to-br from-emerald-50 
+        via-white to-teal-50 dark:from-gray-900 dark:via-gray-900 dark:to-gray-800">
       <div className="w-full max-w-md">
-        <div className="bg-white rounded-3xl shadow-2xl overflow-hidden backdrop-blur-sm">
+        <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl overflow-hidden backdrop-blur-sm">
           <div className="px-10 py-12">
             <div className="text-center mb-8">
-              <h1 className="text-4xl font-extrabold bg-gradient-to-r from-emerald-500 to-teal-600 bg-clip-text text-transparent mb-2">
+              <h1 className="text-4xl font-extrabold bg-gradient-to-r from-emerald-500 to-teal-600 
+        dark:from-emerald-400 dark:to-teal-400 bg-clip-text text-transparent mb-2">
                 Stock Portfolio
               </h1>
-              <p className="text-gray-600">Sign in to your account</p>
+              <p className="text-gray-600 dark:text-gray-400">Sign in to your account</p>
             </div>
 
             {error && (
-              <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl">
-                <p className="text-red-700 font-medium text-sm">{error}</p>
+              <div className="mb-6 p-4 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 
+        rounded-xl">
+                <p className="text-red-700 dark:text-red-400 font-medium text-sm">{error}</p>
               </div>
             )}
 
             <form onSubmit={handleSubmit} className="space-y-5">
               <div>
-                <label htmlFor="email" className="block text-sm font-semibold text-gray-700 mb-2">
+                <label htmlFor="email" className="block text-sm font-semibold text-gray-700 dark:text-gray-300 
+        mb-2">
                   Email
                 </label>
                 <input
@@ -55,14 +59,18 @@ const Login = () => {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 transition-all duration-200 outline-none"
+                  className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600
+                    bg-white dark:bg-gray-700 text-gray-900 dark:text-white
+                    focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 transition-all duration-200 
+        outline-none"
                   placeholder="you@example.com"
                   required
                 />
               </div>
 
               <div>
-                <label htmlFor="password" className="block text-sm font-semibold text-gray-700 mb-2">
+                <label htmlFor="password" className="block text-sm font-semibold text-gray-700 dark:text-gray-300 
+        mb-2">
                   Password
                 </label>
                 <input
@@ -70,7 +78,10 @@ const Login = () => {
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 transition-all duration-200 outline-none"
+                  className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600
+                    bg-white dark:bg-gray-700 text-gray-900 dark:text-white
+                    focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 transition-all duration-200 
+        outline-none"
                   placeholder="••••••••"
                   required
                 />
@@ -93,10 +104,11 @@ const Login = () => {
             </form>
           </div>
 
-          <div className="px-10 py-4 bg-gray-50 border-t border-gray-100">
-            <p className="text-center text-sm text-gray-600">
+          <div className="px-10 py-4 bg-gray-50 dark:bg-gray-700 border-t border-gray-100 dark:border-gray-600">
+            <p className="text-center text-sm text-gray-600 dark:text-gray-400">
               Don't have an account?{' '}
-              <Link to="/register" className="text-emerald-600 hover:text-emerald-700 font-semibold underline">
+              <Link to="/register" className="text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 
+        dark:hover:text-emerald-300 font-semibold underline">
                 Sign up
               </Link>
             </p>

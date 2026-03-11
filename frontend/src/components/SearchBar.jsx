@@ -57,9 +57,10 @@ const SearchBar = ({ onStockSelect }) => {
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
                     placeholder="Search stocks by symbol or company"
-                    className="w-full px-5 py-3 pl-12 rounded-xl border border-gray-300 
-                    focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 
-                    transition-all duration-200 outline-none"
+                    className="w-full px-5 py-3 pl-12 rounded-xl border border-gray-300 dark:border-gray-600
+            bg-white dark:bg-gray-700 text-gray-900 dark:text-white
+            focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500
+            transition-all duration-200 outline-none"
                     onBlur={() => setTimeout(() => setShowResults(false), 200)}
                 />
                 <svg 
@@ -84,30 +85,30 @@ const SearchBar = ({ onStockSelect }) => {
             </div>
 
             {showResults && results.length > 0 && (
-                <div className="absolute top-full left-0 right-0 mt-2 bg-white 
-                                rounded-xl shadow-2xl border border-gray-100 
-                                max-h-96 overflow-y-auto z-50">
+                <div className="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-gray-800
+                          rounded-xl shadow-2xl border border-gray-100 dark:border-gray-700
+                          max-h-96 overflow-y-auto z-50">
                 {results.map((stock) => (
                     <div
                     key={stock._id}
                     onClick={() => handleSelect(stock)}
-                    className="flex items-center justify-between px-4 py-3 
-                                hover:bg-gray-50 cursor-pointer transition-colors
-                                border-b border-gray-50 last:border-0"
+                    className="flex items-center justify-between px-4 py-3
+                          hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer
+                          transition-colors border-b border-gray-50 dark:border-gray-700 last:border-0"
                     >
                     <div>
-                        <p className="font-bold text-gray-900">{stock.symbol}</p>
-                        <p className="text-sm text-gray-500">{stock.company}</p>
+                        <p className="font-bold text-gray-900 dark:text-white">{stock.symbol}</p>
+                        <p className="text-sm text-gray-500 dark:text-gray-400">{stock.company}</p>
                     </div>
                     <div className="flex items-center gap-3">
-                        <p className="font-semibold text-gray-900">
+                        <p className="font-semibold text-gray-900 dark:text-white">
                         ${stock.price?.toFixed(2) || 'N/A'}
                         </p>
                         {isAuthenticated && (
                         <button
                             onClick={(e) => handleAddToWatchList(e, stock._id)}
-                            className="px-3 py-1.5 text-sm bg-emerald-50 text-emerald-600 
-                                    rounded-lg hover:bg-emerald-600 hover:text-white 
+                            className="px-3 py-1.5 text-sm bg-emerald-50 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400
+                                    rounded-lg hover:bg-emerald-600 hover:text-white
                                     transition-all"
                         >
                             + Watch
@@ -120,10 +121,10 @@ const SearchBar = ({ onStockSelect }) => {
             )}
 
             {showResults && query && results.length === 0 && !loading && (
-                <div className="absolute top-full left-0 right-0 mt-2 bg-white
-                                rounded-xl shadow-lg border border-gray-100 p-6 text-center">
-                    <p className="text-gray-500">No stocks found for {query}</p>
-                </div>   
+                <div className="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-gray-800
+                                rounded-xl shadow-lg border border-gray-100 dark:border-gray-700 p-6 text-center">
+                    <p className="text-gray-500 dark:text-gray-400">No stocks found for {query}</p>
+                </div>
             )}
         </div>
     );
