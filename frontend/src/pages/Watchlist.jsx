@@ -144,7 +144,7 @@ const Watchlist = () => {
                 return (
                   <tr
                     key={item._id}
-                    className="hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-200 hover:-translate-y-0.5"
+                    className="hover:bg-gray-50 dark:hover:bg-gray-750 transition-all duration-200 hover:-translate-y-0.5"
                   >
                     <td className="px-6 py-4">
                       <span className="text-base font-semibold text-gray-900 dark:text-white">

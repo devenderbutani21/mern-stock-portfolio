@@ -28,13 +28,12 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 py-12 bg-gradient-to-br from-emerald-50 
-        via-white to-teal-50 dark:from-gray-900 dark:via-gray-900 dark:to-gray-800">
+    <div className="min-h-screen flex items-center justify-center px-4 py-12 bg-gray-50 dark:bg-gray-900">
       <div className="w-full max-w-md">
         <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl overflow-hidden backdrop-blur-sm">
           <div className="px-10 py-12">
             <div className="text-center mb-8">
-              <h1 className="text-4xl font-extrabold bg-gradient-to-r from-emerald-500 to-teal-600 
+              <h1 className="text-4xl font-extrabold bg-gradient-to-r from-emerald-500 to-teal-600
         dark:from-emerald-400 dark:to-teal-400 bg-clip-text text-transparent mb-2">
                 Stock Portfolio
               </h1>
@@ -50,7 +49,7 @@ const Login = () => {
 
             <form onSubmit={handleSubmit} className="space-y-5">
               <div>
-                <label htmlFor="email" className="block text-sm font-semibold text-gray-700 dark:text-gray-300 
+                <label htmlFor="email" className="block text-sm font-semibold text-gray-700 dark:text-gray-300
         mb-2">
                   Email
                 </label>
@@ -61,7 +60,7 @@ const Login = () => {
                   onChange={(e) => setEmail(e.target.value)}
                   className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600
                     bg-white dark:bg-gray-700 text-gray-900 dark:text-white
-                    focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 transition-all duration-200 
+                    focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/30 dark:focus:ring-emerald-500/20 transition-all duration-200
         outline-none"
                   placeholder="you@example.com"
                   required
@@ -69,7 +68,7 @@ const Login = () => {
               </div>
 
               <div>
-                <label htmlFor="password" className="block text-sm font-semibold text-gray-700 dark:text-gray-300 
+                <label htmlFor="password" className="block text-sm font-semibold text-gray-700 dark:text-gray-300
         mb-2">
                   Password
                 </label>
@@ -80,7 +79,7 @@ const Login = () => {
                   onChange={(e) => setPassword(e.target.value)}
                   className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600
                     bg-white dark:bg-gray-700 text-gray-900 dark:text-white
-                    focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 transition-all duration-200 
+                    focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/30 dark:focus:ring-emerald-500/20 transition-all duration-200
         outline-none"
                   placeholder="••••••••"
                   required

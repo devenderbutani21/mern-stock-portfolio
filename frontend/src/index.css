@@ -15,8 +15,32 @@ body {
   body {
     @apply bg-gray-50 text-gray-900;
   }
-  body.dark {
+  .dark body {
     @apply bg-gray-900 text-gray-100;
+  }
+
+  ::selection {
+    @apply bg-emerald-200 text-gray-900;
+  }
+  .dark ::selection {
+    @apply bg-emerald-900 text-gray-100;
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-gray-100 dark:bg-gray-800;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-gray-400 dark:bg-gray-600 rounded-full;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-gray-500 dark:bg-gray-500;
   }
 }
 

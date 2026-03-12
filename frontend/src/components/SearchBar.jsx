@@ -59,7 +59,7 @@ const SearchBar = ({ onStockSelect }) => {
                     placeholder="Search stocks by symbol or company"
                     className="w-full px-5 py-3 pl-12 rounded-xl border border-gray-300 dark:border-gray-600
             bg-white dark:bg-gray-700 text-gray-900 dark:text-white
-            focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500
+            focus:ring-2 focus:ring-emerald-500/30 dark:focus:ring-emerald-500/20 focus:border-emerald-500
             transition-all duration-200 outline-none"
                     onBlur={() => setTimeout(() => setShowResults(false), 200)}
                 />
