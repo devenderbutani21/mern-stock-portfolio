@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { stockAPI, watchlistAPI } from '../services/api';
+import { useStocks } from '../hooks/useStocks';
+import { useAddToWatchlist } from '../hooks/useWatchlist';
 import { useAuth } from '../context/AuthContext';
 import SearchBar from '../components/SearchBar';
 
@@ -22,50 +22,27 @@ const AddIcon = () => (
 );
 
 const StocksList = () => {
-  const [stocks, setStocks] = useState([]);
-  const [loading, setLoading] = useState(true);
   const { isAuthenticated } = useAuth();
-
-  useEffect(() => {
-    const fetchStocks = async () => {
-      try {
-        setLoading(true);
-        const res = await stockAPI.getAll();
-        setStocks(Array.isArray(res.data.stocks) ? res.data.stocks : []);
-      } catch (err) {
-        console.error('Failed to load stocks:', err);
-        setStocks([]);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchStocks();
-  }, []);
+  const { data: stocks = [], isLoading, error } = useStocks();
+  const addToWatchlist = useAddToWatchlist();
 
   const handleAddToWatchlist = async (stockId) => {
     try {
-      await watchlistAPI.add(stockId);
-      setStocks(prev =>
-        prev.map(stock =>
-          stock._id === stockId
-            ? { ...stock, inWatchlist: true }
-            : stock
-        )
-      );
+      await addToWatchlist.mutateAsync(stockId);
     } catch (err) {
       alert(err.response?.data?.error || 'Failed to add');
     }
   };
 
   const getCurrentTime = () => {
-    return new Date().toLocaleTimeString('en-US', { 
-      hour: '2-digit', 
-      minute: '2-digit', 
-      second: '2-digit' 
+    return new Date().toLocaleTimeString('en-US', {
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit'
     });
   };
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 min-h-[400px] animate-pulse">
         <div className="flex justify-between items-center mb-6">
@@ -80,6 +57,14 @@ const StocksList = () => {
             <div className="h-8 bg-gray-200 rounded w-24 ml-4"></div>
           </div>
         ))}
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 rounded-2xl p-6">
+        <p className="text-red-700 dark:text-red-400">Error loading stocks</p>
       </div>
     );
   }
@@ -188,7 +173,7 @@ const StocksList = () => {
         </table>
       </div>
 
-      {stocks.length === 0 && !loading && (
+      {stocks.length === 0 && (
         <div className="text-center py-16">
           <p className="text-xl text-gray-500 dark:text-gray-400 font-medium">
             No stocks available. Check backend.

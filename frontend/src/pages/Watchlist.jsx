@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { watchlistAPI, stockAPI } from '../services/api';
+import { useWatchlist, useRemoveFromWatchlist } from '../hooks/useWatchlist';
+import { useQueryClient } from '@tanstack/react-query';
 
 const RefreshIcon = () => (
   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -14,47 +14,23 @@ const DeleteIcon = () => (
 );
 
 const Watchlist = () => {
-  const [items, setItems] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const { data: items = [], isLoading, error, refetch } = useWatchlist();
+  const removeFromWatchlist = useRemoveFromWatchlist();
+  const queryClient = useQueryClient();
 
-  const loadWatchlist = async () => {
-    try {
-      setLoading(true);
-      const res = await watchlistAPI.getAll();
-      const watchlistItems = Array.isArray(res.data.data) ? res.data.data : [];
-      const itemsWithLive = await Promise.all(
-        watchlistItems.map(async (item) => {
-          try {
-            const res = await stockAPI.getOne(item.stockId.symbol || item.stockId);
-            return { ...item, stock: res.data };
-          } catch {
-            return item;
-          }
-        })
-      );
-      setItems(itemsWithLive);
-    } catch (err) {
-      setError(err.response?.data?.error || 'Failed to load watchlist');
-    } finally {
-      setLoading(false);
-    }
+  const handleRefresh = () => {
+    queryClient.invalidateQueries(['watchlist']);
   };
-
-  useEffect(() => {
-    loadWatchlist();
-  }, []);
 
   const handleDelete = async (id) => {
     try {
-      await watchlistAPI.remove(id);
-      setItems(prev => prev.filter(item => item._id !== id));
+      await removeFromWatchlist.mutateAsync(id);
     } catch (err) {
       alert(err.response?.data?.error || 'Failed to remove');
     }
   };
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="bg-white rounded-2xl shadow-xl p-6 min-h-[400px] animate-pulse">
         <div className="flex justify-between items-center mb-6">
@@ -82,8 +58,8 @@ const Watchlist = () => {
             My Watchlist
           </h2>
           <button
-            onClick={loadWatchlist}
-            className="p-2 rounded-full text-gray-500 dark:text-gray-400 hover:bg-gray-100 
+            onClick={handleRefresh}
+            className="p-2 rounded-full text-gray-500 dark:text-gray-400 hover:bg-gray-100
         dark:hover:bg-gray-700 hover:text-gray-700 dark:hover:text-white transition-all duration-200"
             aria-label="Refresh"
           >

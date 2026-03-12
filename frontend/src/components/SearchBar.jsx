@@ -1,44 +1,21 @@
-import { useState, useEffect } from "react";
-import { stockAPI } from '../services/api';
+import { useState } from "react";
 import { useAuth } from '../context/AuthContext';
-import { watchlistAPI } from "../services/api";
+import { useStockSearch } from '../hooks/useStocks';
+import { useAddToWatchlist } from '../hooks/useWatchlist';
 
 const SearchBar = ({ onStockSelect }) => {
     const [query, setQuery] = useState('');
-    const [results, setResults] = useState([]);
-    const [loading, setLoading] = useState(false);
     const [showResults, setShowResults] = useState(false);
     const { isAuthenticated } = useAuth();
-
-    useEffect(()=> {
-        const delayDebounce = setTimeout(async () => {
-            if(query.trim().length >= 2) {
-                setLoading(true);
-                try {
-                    const res = await stockAPI.search(query);
-                    setResults(res.data.stocks || []);
-                    setShowResults(true);
-                } catch(error) {
-                    console.error('Search Failed:', error);
-                    setResults([]);
-                } finally {
-                    setLoading(false);
-                }
-            } else {
-                setResults([]);
-                setShowResults(false);
-            }
-        }, 300);
-
-        return () => clearTimeout(delayDebounce);
-    }, [query]);
+    const { data: results = [], isLoading } = useStockSearch(query);
+    const addToWatchlist = useAddToWatchlist();
 
     const handleAddToWatchList = async (e, stockId) => {
         e.stopPropagation();
         try {
-            await watchlistAPI.add(stockId);
+            await addToWatchlist.mutateAsync(stockId);
             alert('Added to watchlist!');
-        } catch (err) { 
+        } catch (err) {
             alert(err.response?.data?.error || 'Failed to add')
         }
     };
@@ -76,7 +53,7 @@ const SearchBar = ({ onStockSelect }) => {
                         d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
                     />
                 </svg>
-                {loading && (
+                {isLoading && (
                     <div className="absolute right-4 top-1/2 -translate-y-1/2">
                         <div className="animate-spin h-5 w-5 border-2 border-emerald-500
                                         border-t-transparent rounded-full"></div>
@@ -120,7 +97,7 @@ const SearchBar = ({ onStockSelect }) => {
                 </div>
             )}
 
-            {showResults && query && results.length === 0 && !loading && (
+            {showResults && query && results.length === 0 && (
                 <div className="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-gray-800
                                 rounded-xl shadow-lg border border-gray-100 dark:border-gray-700 p-6 text-center">
                     <p className="text-gray-500 dark:text-gray-400">No stocks found for {query}</p>
