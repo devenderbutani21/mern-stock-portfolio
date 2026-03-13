@@ -1,9 +1,12 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'http://localhost:5000/api';
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
 
 const api = axios.create({
     baseURL: API_BASE_URL,
+    headers: {
+        'Content-Type': 'application/json'
+    }
 });
 
 api.interceptors.request.use((config) => { 
@@ -14,9 +17,20 @@ api.interceptors.request.use((config) => {
     return config;
 });
 
+api.interceptors.response.use(
+    (response) => response,
+    (error) => {
+        if (error.response?.status === 401) {
+            localStorage.removeItem('token');
+            window.location.href = '/login';
+        }
+        return Promise.reject(error);
+    }
+);
+
 export const authAPI = {
-    register: (name, email, password) => 
-        api.post('/auth/register', { name, email, password }),
+    register: ( email, password) => 
+        api.post('/auth/register', { email, password }),
     login: (email, password) => 
         api.post('/auth/login', { email, password }),
 };

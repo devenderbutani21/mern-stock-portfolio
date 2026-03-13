@@ -1,11 +1,11 @@
 /**
  * Rate Limiter with Queue System
  * Enforces rate limiting for Finnhub free tier (60 requests/minute)
- * Default: 10 requests/second to stay well within limits
+ * Using 1 request/second to stay within 60/min limit
  */
 
 class RateLimiter {
-  constructor(requestsPerSecond = 10) {
+  constructor(requestsPerSecond = 1) {
     this.requestsPerSecond = requestsPerSecond;
     this.queue = [];
     this.processing = false;

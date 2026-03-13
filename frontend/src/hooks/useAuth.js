@@ -6,7 +6,10 @@ export const useLogin = () => {
     const navigate = useNavigate();
 
     return useMutation({
-        mutationFn: ({ email, password }) => authAPI.login(email, password),
+        mutationFn: async ({ email, password }) => {
+            const res = await authAPI.login(email, password);
+            return res.data;
+        },
         onSuccess: (res) => {
             localStorage.setItem('token', res.data.token);
             navigate('/stocks', { replace: true });
@@ -18,7 +21,7 @@ export const useRegister = () => {
     const navigate = useNavigate();
 
     return useMutation({
-        mutationFn: ({ name, email, password }) => authAPI.register(name, email, password),
+        mutationFn: ({ email, password }) => authAPI.register( email, password),
         onSuccess: () => {
             navigate('/login');
         },

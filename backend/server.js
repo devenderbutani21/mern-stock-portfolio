@@ -13,10 +13,15 @@ import authRoutes from './routes/authRoutes.js';
 
 const app = express();
 const PORT = process.env.PORT || 5000;
-const limiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 100});
+const limiter = rateLimit({ 
+    windowMs: 15 * 60 * 1000, 
+    max: 100,
+    message: { error: 'Too many requests, please try again later' }
+});
 
 app.use(cors({ origin: 'http://localhost:3000', credentials: true }));
 app.use(express.json());
+app.use(limiter);
 
 try {
     await mongoose.connect(process.env.MONGO_URI);
@@ -26,7 +31,6 @@ try {
     process.exit(1);
 }
 
-app.use('/api', limiter);
 app.use('/api/stocks', stockRoutes);
 app.use('/api/watchlist', watchlistRoutes);
 app.use('/api/auth', authRoutes);
@@ -43,6 +47,13 @@ app.use('*', (req,res) => {
     res.status(404).json({ error: `No ${req.method} ${req.path}` });
 });
 
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
+});
+
+process.on('SIGTERM', () => {
+    server.close(() => {
+        mongoose.connection.close();
+        process.exit(0);
+    });
 });

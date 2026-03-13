@@ -44,14 +44,12 @@ export const getWatchlist = async (req,res) => {
 
 export const deleteWatchlistItem = async (req,res) => {
     try {
-        if(!req.user) return res.status(401).json({ error: 'Auth Required'});
-
         const item = await Watchlist.findOneAndDelete({
             _id: req.params.id,
             userId: req.user.id
         });
 
-        if (!item) return res.status(404).json({ error: 'Item not found '});
+        if (!item) return res.status(404).json({ error: 'Item not found' });
 
         res.json({ success: true, message: 'Removed from watchlist' });
     } catch (error) {

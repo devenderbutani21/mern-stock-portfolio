@@ -11,12 +11,23 @@ export const register = async (req,res) => {
             return res.status(400).json({ error: 'Email and password are required.'});
         }
 
+        // Email format validation
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            return res.status(400).json({ error: 'Invalid email format' });
+        }
+
+        // Password strength validation
+        if (password.length < 6) {
+            return res.status(400).json({ error: 'Password must be at least 6 characters' });
+        }
+
         const existing = await User.findOne({ email });
         if(existing) {
             return res.status(400).json({ error: 'Email already in use' });
         }
 
-        const hashed = await bcrypt.hash(password, 10);
+        const hashed = await bcrypt.hash(password, 12);
 
         const user = await User.create({ email, password: hashed });
 
@@ -49,12 +60,10 @@ export const login = async (req,res) => {
         if(!isMatch) {
             return res.status(400).json({ error: 'Invalid Credentials' });
         }
-
-        const secret = process.env.JWT_SECRET;
         
         const token = jwt.sign(
             { userId: user._id, email: user.email },
-            secret, 
+            JWT_SECRET, 
             { expiresIn: '7d' }
         );
 

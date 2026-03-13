@@ -14,7 +14,7 @@ const DeleteIcon = () => (
 );
 
 const Watchlist = () => {
-  const { data: items = [], isLoading, error, refetch } = useWatchlist();
+  const { data: items = [], isLoading, error } = useWatchlist();
   const removeFromWatchlist = useRemoveFromWatchlist();
   const queryClient = useQueryClient();
 

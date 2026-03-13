@@ -33,6 +33,7 @@ const SearchBar = ({ onStockSelect }) => {
                     type="text"
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
+                    onFocus={() => query.trim().length >= 2 && setShowResults(true)}
                     placeholder="Search stocks by symbol or company"
                     className="w-full px-5 py-3 pl-12 rounded-xl border border-gray-300 dark:border-gray-600
             bg-white dark:bg-gray-700 text-gray-900 dark:text-white

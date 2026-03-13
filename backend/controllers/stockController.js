@@ -3,50 +3,45 @@ import { getHistoricalData, getLiveQuote } from '../services/stockService.js';
 import cache from '../utils/cache.js';
 import rateLimiter from '../utils/rateLimiter.js';
 
+const processStockWithLiveData = async (stock) => {
+    try {
+        const cachedQuote = cache.get(`quote:${stock.symbol.toUpperCase()}`);
+        if (cachedQuote) {
+            return ({
+                ...stock._doc,                    
+                ...cachedQuote,
+                company: stock.company || stock.name
+            });
+        }
+        const live = await getLiveQuote(stock.symbol);
+            return ({
+                ...stock._doc,
+                ...live,
+                company: stock.company || stock.name
+        });
+    } catch (error) {
+        console.error(`Failed to fetch ${stock.symbol}:`, error.message);
+        const currentPrice = stock.prices?.c || stock.prices?.current || stock.initial_price || 0;
+        const previousPrice = stock.prices?.pc || stock.price_2007 || stock.price_2002 || currentPrice;
+        const change = currentPrice - previousPrice;
+        const changePercent = previousPrice ? (change / previousPrice * 100) : 0;
+        return {
+            ...stock._doc,
+            price: currentPrice,
+            change: change,
+            changePercent: changePercent,
+            company: stock.company || stock.name,
+            symbol: stock.symbol
+        };
+    }
+};
+
 // GET all stock logic - with rate limiting and caching
 export const getAllStocks = async (req,res) => {
     try {
         const stocks = await Stock.find();
+        const stocksWithLive = await Promise.all(stocks.map(processStockWithLiveData));
 
-        // Process stocks sequentially to respect rate limit
-        const stocksWithLive = [];
-        for (const stock of stocks) {
-            try {
-                const cachedQuote = cache.get(`quote:${stock.symbol.toUpperCase()}`);
-                if (cachedQuote) {
-                    stocksWithLive.push({
-                        ...stock._doc,
-                        ...cachedQuote,
-                        company: stock.company || stock.name
-                    });
-                } else {
-                    const live = await getLiveQuote(stock.symbol);
-                    stocksWithLive.push({
-                        ...stock._doc,
-                        ...live,
-                        company: stock.company || stock.name
-                    });
-                }
-            } catch (error) {
-                console.error(`Failed to fetch ${stock.symbol}:`, error.message);
-                // Fallback to historical price data from Stock model
-                const currentPrice = stock.prices?.c || stock.prices?.current || stock.initial_price || 0;
-                const previousPrice = stock.prices?.pc || stock.price_2007 || stock.price_2002 || currentPrice;
-                const change = currentPrice - previousPrice;
-                const changePercent = previousPrice ? (change / previousPrice * 100) : 0;
-                const fallback = {
-                    ...stock._doc,
-                    price: currentPrice,
-                    change: change,
-                    changePercent: changePercent,
-                    company: stock.company || stock.name,
-                    symbol: stock.symbol
-                };
-                stocksWithLive.push(fallback);
-            }
-        }
-
-        // Add queue info for debugging
         res.json({
             stocks: stocksWithLive,
             queueLength: rateLimiter.getQueueLength(),

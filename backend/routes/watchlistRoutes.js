@@ -7,8 +7,8 @@ const router = Router();
 // All watchlist routes require login
 router.use(auth);
 
-router.post('/', auth, addToWatchList);
-router.get('/', auth, getWatchlist);
-router.delete('/:id', auth, deleteWatchlistItem);
+router.post('/', addToWatchList);
+router.get('/', getWatchlist);
+router.delete('/:id', deleteWatchlistItem);
 
 export default router;

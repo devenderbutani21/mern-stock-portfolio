@@ -17,8 +17,12 @@ export const auth = (req,res,next) => {
         req.user = { id : decoded.userId };
         next();
     } catch (error) {
-        res.status(401).json({ 
-            error : 'Invalid token' 
-        });
+        if (error.name === 'TokenExpiredError') {
+            return res.status(401).json({ error: 'Token expired' });
+        } 
+        if (error.name === 'JsonWebTokenError') {
+            return res.status(401).json({ error: 'Invalid token' });
+        } 
+        res.status(401).json({ error: 'Token verification failed' });
     }
 };

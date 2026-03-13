@@ -21,6 +21,7 @@ export const useWatchlist = () => {
             );
             return itemsWithLive;
         },
+        staleTime: 5 * 60 * 1000,
     });
 };
 
